@@ -48,9 +48,8 @@ minetest.register_craft( -- banner sheet
     {
         output = "banners:banner_sheet 1",
         recipe = {
-            {"", "", ""},
-            {"farming:cotton", "farming:cotton", "farming:cotton"},
-            {"farming:cotton", "farming:cotton", "farming:cotton"}
+            {"default:comp_fabric", "default:comp_fabric", "default:comp_fabric"},
+            {"default:comp_fabric", "default:comp_fabric", "default:comp_fabric"}
         }
     }
 )
