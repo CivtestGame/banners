@@ -170,7 +170,14 @@ end
 
 banners.banner_after_place = function (pos, player, itemstack, pointed_thing)
     minetest.get_node(pos).param2 = banners.determine_flag_direction(pos, pointed_thing)
-    minetest.get_meta(pos):set_string("banner", itemstack:get_meta():get_string("banner"))
+	local banner_string = itemstack:get_meta():get_string("banner")
+	print(banner_string)
+	if banner_string == "" then
+		local banner = banners.Banner:new(nil)
+    	banner:push_transform(banners.base_transform)
+		banner_string = banner:get_transform_string()
+	end
+    minetest.get_meta(pos):set_string("banner", banner_string)
     minetest.add_entity(pos, "banners:banner_ent")
 end
 
