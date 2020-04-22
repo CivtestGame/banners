@@ -46,9 +46,12 @@ minetest.register_node("banners:steel_banner",
         on_use = function(i, p, pt)
             banners.banner_on_use(i, p, pt)
         end,
-        on_dig = function(pos, n, p) 
-            banners.banner_on_dig(pos, n, p)
-        end
+		preserve_metadata = function(pos, oldnode, oldmeta, drops)
+			local new = ItemStack(oldnode)
+			if drops and drops[1] then
+				drops[1] = new
+			end
+		end
 
     }
 )

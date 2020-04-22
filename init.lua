@@ -159,6 +159,10 @@ banners.banner_on_use = function(itemstack, player, pointed_thing)
 end
 
 banners.banner_on_dig = function(pos, node, player)
+	if (minetest.is_protected(pos)) then
+		return
+	end
+
     local meta = minetest.get_meta(pos)
     if player then 
         local inventory = player:get_inventory()
