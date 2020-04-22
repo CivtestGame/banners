@@ -43,7 +43,7 @@ banners.creation_form_func = function(state)
     state.update_player_inv = function(self)
         local player = minetest.get_player_by_name(self.player)
         local newbanner = player:get_wielded_item()
-        newbanner:set_metadata(state.banner:get_transform_string())
+        newbanner:get_meta():set_string("banner", state.banner:get_transform_string())
         player:set_wielded_item(newbanner)
     end
     state.update_preview = function(self)
@@ -170,7 +170,7 @@ end
 
 banners.banner_after_place = function (pos, player, itemstack, pointed_thing)
     minetest.get_node(pos).param2 = banners.determine_flag_direction(pos, pointed_thing)
-    minetest.get_meta(pos):set_string("banner", itemstack:get_metadata())
+    minetest.get_meta(pos):set_string("banner", itemstack:get_meta():get_string("banner"))
     minetest.add_entity(pos, "banners:banner_ent")
 end
 
