@@ -158,19 +158,6 @@ banners.banner_on_use = function(itemstack, player, pointed_thing)
     end
 end
 
-banners.banner_on_dig = function(pos, node, player)
-	if (minetest.is_protected(pos)) then
-		return
-	end
-
-    local meta = minetest.get_meta(pos)
-    if player then 
-        local inventory = player:get_inventory()
-        inventory:add_item("main", {name=node.name, count=1, wear=0, metadata=meta:get_string("banner")})
-    end
-    minetest.remove_node(pos)
-end
-
 banners.banner_on_destruct = function(pos, node, player)
     local objects = minetest.get_objects_inside_radius(pos, 0.5)
     for _,v in ipairs(objects) do
