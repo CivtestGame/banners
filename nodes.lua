@@ -1,3 +1,12 @@
+local preserve_metadata = function (pos, oldnode, oldmeta, drops)
+	local new = ItemStack(oldnode)
+	local banner_string = minetest.get_meta(pos):get_string("banner")
+	new:get_meta():set_string("banner", banner_string)
+	if drops and drops[1] then
+		drops[1] = new
+	end
+end
+
 -- da wooden banner
 minetest.register_node("banners:wooden_banner",
     {
@@ -19,9 +28,9 @@ minetest.register_node("banners:wooden_banner",
         on_use = function(i, p, pt)
             banners.banner_on_use(i, p, pt)
         end,
-        on_dig = function(pos, n, p) 
-            banners.banner_on_dig(pos, n, p)
-        end
+		preserve_metadata = function(pos, oldnode, oldmeta, drops)
+			preserve_metadata(pos, oldnode, oldmeta, drops)
+		end
     }
 )
 
@@ -46,9 +55,9 @@ minetest.register_node("banners:steel_banner",
         on_use = function(i, p, pt)
             banners.banner_on_use(i, p, pt)
         end,
-        on_dig = function(pos, n, p) 
-            banners.banner_on_dig(pos, n, p)
-        end
+		preserve_metadata = function(pos, oldnode, oldmeta, drops)
+			preserve_metadata(pos, oldnode, oldmeta, drops)
+		end
 
     }
 )
