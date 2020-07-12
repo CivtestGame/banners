@@ -43,8 +43,10 @@ banners.creation_form_func = function(state)
     state.update_player_inv = function(self)
         local player = minetest.get_player_by_name(self.player)
         local newbanner = player:get_wielded_item()
-        newbanner:get_meta():set_string("banner", state.banner:get_transform_string())
-        player:set_wielded_item(newbanner)
+	local banner_string = state.banner:get_transform_string()
+	newbanner:get_meta():set_string("banner", banner_string)
+	banners.update_itemstack(newbanner, banner_string)
+	player:set_wielded_item(newbanner)
     end
     state.update_preview = function(self)
         self:get("banner_preview"):setImage(self.banner:get_transform_string())
@@ -78,7 +80,7 @@ banners.creation_form_func = function(state)
     -- add banners colors
     local x = 7
     local y = .3
-    for i in ipairs(banners.colors) do 
+    for i in ipairs(banners.colors) do
         local b = state:button(x, y, 1, 1, banners.colors[i], "")
         b:setImage("bg_"..banners.colors[i]..".png")
         b:click(function(self, state)
@@ -207,6 +209,51 @@ banners.banner_on_activate = function(self)
     end
 end
 
+
+local function extract(str, pattern, trim1, trim2)
+   local last_found = 0
+   local accum = {}
+   while true do
+      local a, b = string.find(str, pattern, last_found)
+
+      if not a or not b then
+         break
+      end
+
+      accum[#accum + 1] = string.sub(str, a + trim1, b - trim2)
+
+      last_found = b
+   end
+   return accum
+end
+
+local function flag_description(banner_string)
+   local colors = extract(banner_string, "bg_(%a+).png", 3, 4) or {}
+   local masks = extract(banner_string, "mask:([%a_]+).png", 5, 4) or {}
+
+   local desc = ""
+
+   -- we start at 2 because 1 is the default white bg
+   for i=2,#colors,1 do
+      desc = desc .. " - " .. (colors[i] or "?") .. " "
+         .. (masks[i] or "?") .. "\n"
+   end
+
+   return desc
+end
+
+banners.update_itemstack = function(itemstack, banner_string)
+   local meta = itemstack:get_meta()
+   meta:set_string("banner", banner_string)
+
+   local banner_desc = itemstack:get_definition().description
+
+   local new_description = banner_desc .. "\n" .. flag_description(banner_string)
+
+   meta:set_string("description", new_description)
+   return itemstack
+end
+
 minetest.register_entity("banners:banner_ent",
     {
         collisionbox = {0,0,0,0,0,0},
@@ -224,4 +271,3 @@ end
 dofile(minetest.get_modpath("banners").."/items.lua")
 dofile(minetest.get_modpath("banners").."/nodes.lua")
 dofile(minetest.get_modpath("banners").."/crafts.lua")
-
